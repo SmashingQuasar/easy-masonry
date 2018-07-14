@@ -2,10 +2,9 @@
 
 class MasonryColumn
 {
-    private height: number = 0;
-    readonly node: Node;
+    readonly node: HTMLElement;
 
-    constructor(node: Node)
+    constructor(node: HTMLElement)
     {
         this.node = node;
     }
@@ -15,15 +14,7 @@ class MasonryColumn
      */
     public getHeight(): number
     {
-        return this.height;
-    }
-
-    /**
-     * setHeight
-     */
-    public setHeight(height: number): void
-    {
-        this.height = height;
+        return this.node.getBoundingClientRect().height;
     }
 
     /**
@@ -37,101 +28,59 @@ class MasonryColumn
 
 class EasyMasonry
 {
-    private elements: NodeList;
+    private elements: Array<any>;
     private root: HTMLElement;
     private columnTemplate: HTMLElement = document.createElement("masonry-column");
     private columns: Array<MasonryColumn> = [];
 
-    constructor(root: HTMLElement, columns_amount: number, column_width: number = 100/columns_amount)
+    constructor(origin: HTMLElement, columns_amount: number = 2)
     {
-        this.root = root;
-        this.elements = this.root.querySelectorAll(":not(masonry-column)");
+        this.root = document.createElement("easy-masonry");
+        this.elements = Array.from(origin.children);
+        origin.appendChild(this.root);
 
-        let margins: number = this.calculateMargins();
-    
-        this.columnTemplate.style.width = `calc(${column_width}% - ${margins}px)`;
-
-        for (let i = 0; i < columns_amount; ++i)
+        for (let i: number = 0; i < columns_amount; ++i)
         {
-            this.columns[i] = new MasonryColumn(this.columnTemplate.cloneNode(true));
+            this.columns[i] = new MasonryColumn(<HTMLElement>this.columnTemplate.cloneNode(true));
             this.root.appendChild(this.columns[i].node);
         }
-
+        
         Array.prototype.forEach.call(
             this.elements,
-            (element: HTMLElement) =>
+            (element: HTMLImageElement) =>
             {
-                let smallest_column = this.getSmallestColumn();
-
-                this.columns[smallest_column].node.appendChild(element);
-
-                let margin_top = 0;
-                let margin_bottom = 0;
-                let element_style: CSSStyleDeclaration = window.getComputedStyle(element);
-                let matched_style: RegExpMatchArray | null;
-
-                if (element_style)
-                {
-
-                    if (element_style.marginTop)
-                    {
-                        matched_style = element_style.marginTop.match(/[0-9]+/);
-
-                        if (matched_style)
-                        {
-                            margin_top = +matched_style[0];
-                        }
-                    }
-                    if (element_style.marginBottom)
-                    {
-                        matched_style = element_style.marginBottom.match(/[0-9]+/);
-
-                        if (matched_style)
-                        {
-                            margin_bottom = +matched_style[0];
-                        }
-                    }
-                }
-
-                let height = this.columns[smallest_column].getHeight() + element.offsetHeight + margin_bottom + margin_top;
-
-                this.columns[smallest_column].setHeight(height);
+                element.remove();
             }
         );
+
+        this.addNodes();
+
     }
 
-    private calculateMargins(): number
+    /**
+     * addNodes
+     */
+    public async addNodes()
     {
-        let column_template: CSSStyleDeclaration = window.getComputedStyle(this.columnTemplate);
-
-        let margin_left: number = 0;
-        let margin_right: number = 0;
-        let style: RegExpMatchArray | null;
-
-        if (column_template.marginRight)
+        
+        function nextRepaint()
         {
-            style = column_template.marginRight.match(/[0-9]+/);
-
-            if (style)
-            {
-                margin_right = +style[0];
-            }
-
+            return new Promise(
+                (accept) =>
+                {
+                    requestAnimationFrame(accept);
+                }
+            );
         }
 
-        if (column_template.marginLeft)
+        for (let i: number = 0; i < this.elements.length; ++i)
         {
-            style = column_template.marginLeft.match(/[0-9]+/);
+            await nextRepaint();
 
-            if (style)
-            {
-                margin_left = +style[0];
-            }
+            let smallest_column = this.getSmallestColumn();
 
+            this.columns[smallest_column].node.appendChild(this.elements[i]);
         }
-
-        return margin_left + margin_right;
-
     }
 
     private getSmallestColumn()

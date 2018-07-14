@@ -1,8 +1,8 @@
 "use strict";
-window.addEventListener("load", function () {
-    var wrapper = document.querySelector("easy-masonry");
+window.addEventListener("load", () => {
+    let wrapper = document.querySelector("main");
     if (wrapper instanceof HTMLElement) {
-        var masonry = new EasyMasonry(wrapper, 4);
+        let masonry = new EasyMasonry(wrapper, 3);
         console.log(masonry);
     }
     else if (wrapper !== null) {

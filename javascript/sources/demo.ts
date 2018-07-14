@@ -3,11 +3,11 @@ window.addEventListener(
     "load",
     () =>
     {
-        let wrapper: HTMLElement | null = document.querySelector("easy-masonry");
+        let wrapper: HTMLElement | null = document.querySelector("main");
 
         if (wrapper instanceof HTMLElement)
         {
-            let masonry = new EasyMasonry(wrapper, 4);
+            let masonry = new EasyMasonry(wrapper, 3);
             console.log(masonry);
         }
         else if (wrapper !== null)

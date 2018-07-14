@@ -32,7 +32,26 @@ var EasyMasonry = (function () {
         Array.prototype.forEach.call(this.elements, function (element) {
             var smallest_column = _this.getSmallestColumn();
             _this.columns[smallest_column].node.appendChild(element);
-            _this.columns[smallest_column].setHeight(_this.columns[smallest_column].getHeight() + element.offsetHeight);
+            var margin_top = 0;
+            var margin_bottom = 0;
+            var element_style = window.getComputedStyle(element);
+            var matched_style;
+            if (element_style) {
+                if (element_style.marginTop) {
+                    matched_style = element_style.marginTop.match(/[0-9]+/);
+                    if (matched_style) {
+                        margin_top = +matched_style[0];
+                    }
+                }
+                if (element_style.marginBottom) {
+                    matched_style = element_style.marginBottom.match(/[0-9]+/);
+                    if (matched_style) {
+                        margin_bottom = +matched_style[0];
+                    }
+                }
+            }
+            var height = _this.columns[smallest_column].getHeight() + element.offsetHeight + margin_bottom + margin_top;
+            _this.columns[smallest_column].setHeight(height);
         });
     }
     EasyMasonry.prototype.calculateMargins = function () {
@@ -69,16 +88,3 @@ var EasyMasonry = (function () {
     };
     return EasyMasonry;
 }());
-window.addEventListener("load", function () {
-    var wrapper = document.querySelector("easy-masonry");
-    if (wrapper instanceof HTMLElement) {
-        var masonry = new EasyMasonry(wrapper, 4);
-        console.log(masonry);
-    }
-    else if (wrapper !== null) {
-        console.log(wrapper.constructor.name);
-    }
-    else {
-        console.log("EM: Wrapper does not exist.");
-    }
-});

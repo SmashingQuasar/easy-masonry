@@ -65,8 +65,37 @@ class EasyMasonry
 
                 this.columns[smallest_column].node.appendChild(element);
 
-                this.columns[smallest_column].setHeight(this.columns[smallest_column].getHeight() + element.offsetHeight);
+                let margin_top = 0;
+                let margin_bottom = 0;
+                let element_style: CSSStyleDeclaration = window.getComputedStyle(element);
+                let matched_style: RegExpMatchArray | null;
 
+                if (element_style)
+                {
+
+                    if (element_style.marginTop)
+                    {
+                        matched_style = element_style.marginTop.match(/[0-9]+/);
+
+                        if (matched_style)
+                        {
+                            margin_top = +matched_style[0];
+                        }
+                    }
+                    if (element_style.marginBottom)
+                    {
+                        matched_style = element_style.marginBottom.match(/[0-9]+/);
+
+                        if (matched_style)
+                        {
+                            margin_bottom = +matched_style[0];
+                        }
+                    }
+                }
+
+                let height = this.columns[smallest_column].getHeight() + element.offsetHeight + margin_bottom + margin_top;
+
+                this.columns[smallest_column].setHeight(height);
             }
         );
     }
@@ -126,25 +155,3 @@ class EasyMasonry
     }
 
 }
-window.addEventListener(
-    "load",
-    () =>
-    {
-        let wrapper: HTMLElement | null = document.querySelector("easy-masonry");
-
-        if (wrapper instanceof HTMLElement)
-        {
-            let masonry = new EasyMasonry(wrapper, 4);
-            console.log(masonry);
-        }
-        else if (wrapper !== null)
-        {
-            console.log((<any>wrapper).constructor.name);
-        }
-        else
-        {
-            console.log("EM: Wrapper does not exist.");
-        }
-
-    }
-);

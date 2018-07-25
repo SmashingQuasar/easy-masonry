@@ -2,7 +2,8 @@
     "compilerOptions": {
         "outDir": "./javascript/build",
         "allowJs": true,
-        "target": "es2015",
+        "target": "es5",
+        "lib": ["dom", "es2015"],
         "alwaysStrict": true,
         "removeComments": true,
         "strict": true,
@@ -17,7 +18,7 @@
         "checkJs": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "newLine": "LF"
+        "newLine": "LF",
     },
     "include": [
         "./javascript/sources"

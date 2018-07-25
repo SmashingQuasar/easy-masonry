@@ -38,23 +38,7 @@ class EasyMasonry
         this.root = document.createElement("easy-masonry");
         this.elements = Array.from(origin.children);
         origin.appendChild(this.root);
-
-        for (let i: number = 0; i < columns_amount; ++i)
-        {
-            this.columns[i] = new MasonryColumn(<HTMLElement>this.columnTemplate.cloneNode(true));
-            this.root.appendChild(this.columns[i].node);
-        }
-        
-        Array.prototype.forEach.call(
-            this.elements,
-            (element: HTMLImageElement) =>
-            {
-                element.remove();
-            }
-        );
-
-        this.addNodes();
-
+        this.paint(columns_amount);
     }
 
     /**
@@ -62,7 +46,6 @@ class EasyMasonry
      */
     public async addNodes()
     {
-        
         function nextRepaint()
         {
             return new Promise(
@@ -72,7 +55,6 @@ class EasyMasonry
                 }
             );
         }
-
         for (let i: number = 0; i < this.elements.length; ++i)
         {
             await nextRepaint();
@@ -103,4 +85,38 @@ class EasyMasonry
         return smallest_column;
     }
 
+    private removeBaseElements(): void
+    {
+        Array.prototype.forEach.call(
+            this.elements,
+            (element: HTMLElement) =>
+            {
+                element.remove();
+            }
+        );
+    }
+
+    private addColumns(columns_amount: number): void
+    {
+        this.columns.forEach(
+            (column: MasonryColumn) =>
+            {
+                column.node.remove();
+            }
+        );
+        this.columns = [];
+
+        for (let i: number = 0; i < columns_amount; ++i)
+        {
+            this.columns[i] = new MasonryColumn(<HTMLElement>this.columnTemplate.cloneNode(true));
+            this.root.appendChild(this.columns[i].node);
+        }
+    }
+
+    public paint(columns_amount: number = 2): void
+    {
+        this.addColumns(columns_amount);
+        this.removeBaseElements();
+        this.addNodes();
+    }
 }

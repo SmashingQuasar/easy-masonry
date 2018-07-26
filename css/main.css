@@ -1,14 +1,5 @@
 easy-masonry
 {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
     align-items: flex-start;
-}
-
-masonry-column
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
 }

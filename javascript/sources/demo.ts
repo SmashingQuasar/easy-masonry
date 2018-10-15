@@ -28,13 +28,13 @@ function debounce_event(target: any, event_name: string, delay: number)
 		}
 	);
 }
+let masonry: EasyMasonry | undefined = undefined;
 
 window.addEventListener(
     "load",
     () =>
     {
         let wrapper: HTMLElement | null = document.querySelector("main");
-        let masonry: EasyMasonry;
 
         let columns = 2;
 
@@ -67,13 +67,16 @@ window.addEventListener(
             "debounced_resize",
             () =>
             {
-                if (document.body.offsetWidth < 1140)
+                if (masonry !== undefined)
                 {
-                    masonry.paint(2);
-                }
-                else
-                {
-                    masonry.paint(3);
+                    if (document.body.offsetWidth < 1140)
+                    {
+                        masonry.paint(2);
+                    }
+                    else
+                    {
+                        masonry.paint(3);
+                    }
                 }
             }
         );

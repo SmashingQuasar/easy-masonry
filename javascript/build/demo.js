@@ -13,9 +13,9 @@ function debounce_event(target, event_name, delay) {
         id = setTimeout(completed, delay);
     });
 }
+var masonry = undefined;
 window.addEventListener("load", function () {
     var wrapper = document.querySelector("main");
-    var masonry;
     var columns = 2;
     if (document.body.offsetWidth < 1140) {
         columns = 2;
@@ -35,11 +35,13 @@ window.addEventListener("load", function () {
     }
     debounce_event(window, "resize", 300);
     window.addEventListener("debounced_resize", function () {
-        if (document.body.offsetWidth < 1140) {
-            masonry.paint(2);
-        }
-        else {
-            masonry.paint(3);
+        if (masonry !== undefined) {
+            if (document.body.offsetWidth < 1140) {
+                masonry.paint(2);
+            }
+            else {
+                masonry.paint(3);
+            }
         }
     });
 });

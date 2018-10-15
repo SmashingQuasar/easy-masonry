@@ -65,9 +65,23 @@ class EasyMasonry
         }
     }
 
-    private getSmallestColumn()
+    /**
+     * add
+     */
+    public add(node: HTMLElement): void
     {
-        let smallest_column: any;
+        let smallest_column: number;
+
+        smallest_column = this.getSmallestColumn();
+
+        this.elements.push(node);
+
+        this.columns[smallest_column].getNode().appendChild(node);
+    }
+
+    private getSmallestColumn(): number
+    {
+        let smallest_column: number = 0;
         let height: number = 0;
         let current_height: number = 0;
 

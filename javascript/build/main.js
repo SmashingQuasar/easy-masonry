@@ -85,8 +85,14 @@ var EasyMasonry = (function () {
             });
         });
     };
-    EasyMasonry.prototype.getSmallestColumn = function () {
+    EasyMasonry.prototype.add = function (node) {
         var smallest_column;
+        smallest_column = this.getSmallestColumn();
+        this.elements.push(node);
+        this.columns[smallest_column].getNode().appendChild(node);
+    };
+    EasyMasonry.prototype.getSmallestColumn = function () {
+        var smallest_column = 0;
         var height = 0;
         var current_height = 0;
         for (var i = 0; i < this.columns.length; ++i) {
